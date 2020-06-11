@@ -10,16 +10,35 @@
   font-weight: bold;
 }
 
-form{
-  justify-content: center;
+.todo-text{
+  width:100%;
+  min-height:50px;
+  height:auto;
+  border-style: none; 
+  border-color: Transparent; 
+  overflow: auto;   
+  cursor: pointer;
+}
+
+.todo-text.active{
+  text-decoration: line-through;
+}
+
+i.hidden{
+  display: none;
+}
+
+i.visible{
+  visibility: visible;
+}
+
+.menu{
+
 }
 
 
-.listItem{
-  display: flex;
-  justify-content: center;
-  height: 50px;  
-}
+
+
 
 
 
