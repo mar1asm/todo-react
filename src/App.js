@@ -3,67 +3,77 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 
-function Filter(props){
-    const isActive = (index) =>{
-        return `btn ${props.filter.isSelected? 'btn-primary': 'btn-default'}`;
+
+
+function Filter(props) {
+    const isActive = () => {
+        return `btn ${props.filter.isSelected ? 'btn-primary' : 'btn-default'}`;
     }
-    return(
-    <button className={`${isActive(props.filter.index)} p-2`}>
-        {props.filter.text}
-    </button>
-    )
-}
-
-
-function Filters(props) {
-    const [filters, setFilters]=useState([
-        {
-            text: 'All',
-            isSelected: true
-        },
-        {
-            text: 'Completed',
-            isSelected: false
-        },
-        {
-            text: 'Incompleted',
-            isSelected: false
-        }
-    ])
     return (
-        <div className="filters pt-5">
-            {filters.map((filter, index)=>{
-                <Filter filter={filter} index={index}/>
-            })}
-        </div>
+        <button className={`${isActive()} mx-1`}
+            onClick={() => props.ChangeFilters(props.index)}
+        >
+            {props.filter.text}
+        </button>
     )
 }
 
 
 function Todo(props) {
-    const [newValue, setNewValue] = useState(props.todo.text);
+    const [editedValue, setEditedValue] = useState(props.todo.text);
+    const [editedDate, setEditedDate]=useState(props.todo.dueDate);
 
     const handleSave = e => {
         e.preventDefault();
-        if (newValue !== '') {
-            props.SaveChanges(props.index, newValue);
+        if (editedValue !== '') {
+            props.SaveChanges(props.index, editedValue, editedDate);
         }
     }
 
     const handleDiscard = e => {
         e.preventDefault();
         props.DiscardChanges(props.index);
-        setNewValue(props.todo.text);
+        setEditedValue(props.todo.text);
+        setEditedDate(props.todo.dueDate);
     }
+
+    const formatDate=()=>{
+        if (editedDate===null)
+            return '-';
+        let year=editedDate.getFullYear();
+        let month=editedDate.getMonth()+1;
+        let day=editedDate.getDate();
+
+        month=month>9? month.toString(): `0${month.toString()}`;
+        day=day>9? day.toString(): `0${day.toString()}`;
+
+        return `${year}-${month}-${day}`;
+    }
+
+    if (!props.displayTodo)
+        return null;
     return (
         <li className="list-group-item d-flex justify-content-between align-items-center">
-            <textarea readonly='readonly' id={`text ${props.index}`} suppressContentEditableWarning={true}
-                className={`todo-text ${props.todo.isCompleted ? "active" : ""}`}
-                onChange={e => setNewValue(e.target.value)}
-                value={newValue} />
+            <div className="w-100">
+                <textarea readOnly='readonly' 
+                    id={`text ${props.index}`} suppressContentEditableWarning={true}
+                    className={`todo-text ${props.todo.isCompleted ? "active" : ""}`}
+                    onChange={e => setEditedValue(e.target.value)}
+                    value={editedValue} />
+                 <div className={props.todo.isCompleted?'hidden':'visible'}>
+                 <span>Due date: </span>
+                 <input type="date" 
+                    id={`date ${props.index}`}
+                    readOnly='readonly'
+                    className="form-control w-50"
+                    onChange={e=>setEditedDate(new Date(e.target.value))} 
+                    value={formatDate()}
+                    />  
+                </div>   
+            </div>
             <span className="col-1 fa-lg">
                 <i className={`${props.todo.isCompleted ? "fa fa-undo p-1" : "fa fa-check p-1"} ${props.todo.hasChanges === true ? "hidden" : "visible"}`}
-                    title={`Mark as ${props.todo.isCompleted? 'incomplete':'done'}`}
+                    title={`Mark as ${props.todo.isCompleted ? 'incomplete' : 'done'}`}
                     onClick={() => props.ToggleCompleteTodo(props.index)}></i>
                 <i className={`fa fa-pencil p-1 ${props.todo.isCompleted ? "hidden" : "visible"} ${props.todo.hasChanges === true ? "hidden" : "visible"}`}
                     title="Edit"
@@ -83,12 +93,14 @@ function Todo(props) {
 }
 function TodoForm(props) {
     const [value, setValue] = useState('');
+    const [date, setDate]=useState('');
 
     const handleSubmit = e => {
         e.preventDefault();
-        if (value !== '') {
-            props.AddTodo(value);
+        if (value !== '' && date!=='') {
+            props.AddTodo(value, date);
             setValue('');
+            setDate('');
         }
     }
 
@@ -96,12 +108,17 @@ function TodoForm(props) {
         <form className="form-inline pt-5"
             onSubmit={handleSubmit}
         >
-            <input placeholder="add todo" className="form-control"
+            <input placeholder="add todo" className="form-control mx-2"
                 onChange={e => setValue(e.target.value)}
                 value={value} />
+            
+            <input type="date" 
+                className="form-control input-lg mx-2"
+                onChange={e=> setDate(e.target.value)}
+                value={date}/>
+            
 
             <button type="submit" className="btn btn-success"
-            //onClick={props.AddTodo}
             >
                 Add
                     </button>
@@ -109,26 +126,49 @@ function TodoForm(props) {
     );
 }
 
-function App(props) {
+function App() {
     const [todos, setTodos] = useState([
         {
             text: 'Un todo',
             isCompleted: false,
-            hasChanges: false
+            hasChanges: false,
+            dueDate: new Date('2021-08-01')
             //todo: add a due date
         },
         {
             text: 'alt todo ceva mai lung sa fdjjh adfih sdf asdifhias df  dah  hfsdauhfias  dhafsi vedem ce se intampla trebuie si mai lung de atat',
             isCompleted: false,
-            hasChanges: false
+            hasChanges: false,
+            dueDate: new Date('2021-08-02')
             //todo: add a due date
         }
     ]);
 
+    const [filters, setFilters] = useState([
+        {
+            text: 'All',
+            isSelected: true
+        },
+        {
+            text: 'Completed',
+            isSelected: false
+        },
+        {
+            text: 'Incompleted',
+            isSelected: false
+        }
+    ]);
 
+    const ChangeFilters = index => {
+        let newFilters = [...filters];
+        newFilters.forEach((newFilter, i) => {
+            i === index ? newFilter.isSelected = true : newFilter.isSelected = false;
+        });
+        setFilters(newFilters);
+    }
 
-    const AddTodo = text => {
-        let newTodos = [...todos, { text, isCompleted: false }];
+    const AddTodo = (text, date) => {
+        let newTodos = [...todos, { text, isCompleted: false, dueDate: new Date(date) }];
         SortTodos(newTodos);
         setTodos(newTodos);
     }
@@ -148,17 +188,21 @@ function App(props) {
     }
 
     const ToggleEditTodo = index => {
-        var el = document.getElementById(`text ${index}`);
-        el.toggleAttribute('readonly');
+        var textElement = document.getElementById(`text ${index}`);
+        var dateElement = document.getElementById(`date ${index}`);
+        textElement.toggleAttribute('readOnly');
+        dateElement.toggleAttribute('readOnly');
+
         let newTodos = [...todos];
         newTodos[index].hasChanges = !newTodos[index].hasChanges;
         setTodos(newTodos);
     }
 
-    const SaveChanges = (index, text) => {
+    const SaveChanges = (index, text, date) => {
         ToggleEditTodo(index);
         let newTodos = [...todos];
         newTodos[index].text = text;
+        newTodos[index].dueDate=date;
         setTodos(newTodos);
     }
 
@@ -173,18 +217,37 @@ function App(props) {
         return arr;
     }
 
+    const DisplayTodo = (index) => {
+        return filters[0].isSelected ? true : (filters[2].isSelected && todos[index].isCompleted) ? false : (filters[1].isSelected && !todos[index].isCompleted) ? false : true;
+    }
+
     return (
         <>
             <div className="title pt-3">
-                {props.title}
+                To-do List
             </div>
             <div className="menu d-flex justify-content-between">
                 <TodoForm AddTodo={AddTodo} />
-                <Filter />
+                <div className="filters pt-5">
+                    {filters.map((filter, index) => (
+                        <Filter key={index}
+                            index={index}
+                            filter={filter}
+                            ChangeFilters={ChangeFilters} />
+                    ))}
+                </div>
             </div>
-            <ul className="ceva list-group pt-3">
+            <ul className="list-group pt-3">
                 {todos.map((todo, index) => (
-                    <Todo key={index} index={index} todo={todo} ToggleCompleteTodo={ToggleCompleteTodo} DeleteTodo={DeleteTodo} ToggleEditTodo={ToggleEditTodo} SaveChanges={SaveChanges} DiscardChanges={DiscardChanges} />
+                    <Todo key={index}
+                        index={index}
+                        todo={todo}
+                        displayTodo={DisplayTodo(index)}
+                        ToggleCompleteTodo={ToggleCompleteTodo}
+                        DeleteTodo={DeleteTodo}
+                        ToggleEditTodo={ToggleEditTodo}
+                        SaveChanges={SaveChanges}
+                        DiscardChanges={DiscardChanges} />
                 ))}
             </ul>
         </>

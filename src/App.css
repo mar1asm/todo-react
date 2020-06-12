@@ -4,6 +4,7 @@
   justify-content: center;
 }
 
+
 .title{
   text-align: center;
   font-size: x-large;
@@ -12,8 +13,7 @@
 
 .todo-text{
   width:100%;
-  min-height:50px;
-  height:auto;
+  min-height:fit-content;
   border-style: none; 
   border-color: Transparent; 
   overflow: auto;   
@@ -32,9 +32,11 @@ i.visible{
   visibility: visible;
 }
 
-.menu{
-
+div.hidden{
+  display: none;
 }
+
+
 
 
 

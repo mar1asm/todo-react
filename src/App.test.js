@@ -1,9 +1,9 @@
-import React from 'react';
-import { render } from '@testing-library/react';
-import App from './App';
+describe(`todo-form`, () =>{
+  it(`Should not regress`,()=>{
+    expect(2+2).toEqual(4);
+  });
+});
 
-test('renders learn react link', () => {
-  const { getByText } = render(<App />);
-  const linkElement = getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+it(`async test 1`, done =>{
+  setTimeout(done, 100);
 });
