@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 
 function TodoForm(props) {
     const [value, setValue] = useState('');
-    const [date, setDate]=useState('');
+    const [date, setDate] = useState('');
 
     const handleSubmit = e => {
         e.preventDefault();
-        if (value !== '' && date!=='') {
+        if (value !== '' && date !== '') {
             props.AddTodo(value, date);
             setValue('');
             setDate('');
@@ -20,12 +20,12 @@ function TodoForm(props) {
             <input placeholder="add todo" className="form-control mx-2"
                 onChange={e => setValue(e.target.value)}
                 value={value} />
-            
-            <input type="date" 
+
+            <input type="date"
                 className="form-control input-lg mx-2"
-                onChange={e=> setDate(e.target.value)}
-                value={date}/>
-            
+                onChange={e => setDate(e.target.value)}
+                value={date} />
+
 
             <button type="submit" className="btn btn-success"
             >

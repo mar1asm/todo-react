@@ -2,7 +2,7 @@ import React from 'react';
 import Todo from './todo/Todo'
 
 
-function TodoList({todos, filter, selectedButton, UpdateTodos}){
+function TodoList({ todos, filter, selectedButton, UpdateTodos }) {
 
     const ToggleCompleteTodo = index => {
         let newTodos = [...todos];
@@ -26,15 +26,15 @@ function TodoList({todos, filter, selectedButton, UpdateTodos}){
         let newTodos = [...todos];
         newTodos[index].hasChanges = !newTodos[index].hasChanges;
         UpdateTodos(newTodos);
-    } 
+    }
 
     const SaveChanges = (index, text, date) => {
         ToggleEditTodo(index);
         let newTodos = [...todos];
         if (text)
-        newTodos[index].text = text;
+            newTodos[index].text = text;
         if (date)
-        newTodos[index].dueDate=date;
+            newTodos[index].dueDate = date;
         UpdateTodos(newTodos);
     }
 
@@ -45,15 +45,15 @@ function TodoList({todos, filter, selectedButton, UpdateTodos}){
     }
 
     const DisplayTodo = (index) => {
-        let displayTodo=true;
-        displayTodo=selectedButton==='All' ? true : (selectedButton==='Uncompleted' && todos[index].isCompleted) ? false : (selectedButton==='Completed' && !todos[index].isCompleted) ? false : true;
-        displayTodo=displayTodo&&todos[index].text.includes(filter);
-        return displayTodo;    
+        let displayTodo = true;
+        displayTodo = selectedButton === 'All' ? true : (selectedButton === 'Uncompleted' && todos[index].isCompleted) ? false : (selectedButton === 'Completed' && !todos[index].isCompleted) ? false : true;
+        displayTodo = displayTodo && todos[index].text.includes(filter);
+        return displayTodo;
     }
 
     return (
         <>
-        <ul className="list-group pt-3">
+            <ul className="list-group pt-3">
                 {todos.map((todo, index) => (
                     <Todo key={index}
                         index={index}
@@ -65,7 +65,7 @@ function TodoList({todos, filter, selectedButton, UpdateTodos}){
                         SaveChanges={SaveChanges}
                         DiscardChanges={DiscardChanges} />
                 ))}
-        </ul>
+            </ul>
         </>
     )
 }

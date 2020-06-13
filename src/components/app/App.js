@@ -37,7 +37,7 @@ function App() {
     ]);
 
     const [selectedButton, setSelectedButton] = useState('All');
-    const [filter, setFilter]=useState('');
+    const [filter, setFilter] = useState('');
 
     const UpdateTodos = (newTodos) => {
         setTodos(newTodos);
@@ -53,7 +53,7 @@ function App() {
         setTodos(newTodos);
     }
 
-    const SearchTodos=(e)=>{
+    const SearchTodos = (e) => {
         setFilter(e.target.value);
     }
 
@@ -67,7 +67,7 @@ function App() {
             </div>
             <div className="menu d-flex justify-content-between">
                 <TodoForm AddTodo={AddTodo} />
-                <TodoSearch SearchTodos={SearchTodos}/>
+                <TodoSearch SearchTodos={SearchTodos} />
                 <div className="buttons pt-5">
                     {
                         buttons.map((button, index) => (
